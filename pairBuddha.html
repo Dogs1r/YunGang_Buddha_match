@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云冈石窟佛像匹配</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D2B48C',      // 土黄色
+                        secondary: '#C2B280',    // 砂岩色
+                        accent: '#5D4037',       // 深褐色
+                        gold: '#D4AF37',         // 金色
+                        background: '#F5F5DC',   // 浅米色
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .bg-stone-pattern {
+                background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d2b48c' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            }
+            .border-stone {
+                border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.2' fill-rule='evenodd'/%3E%3C/svg%3E") 20;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen font-sans text-accent">
+    <!-- 页面容器 -->
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <!-- 头部 -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-accent mb-4 text-shadow">云冈石窟佛像匹配</h1>
+            <p class="text-lg md:text-xl text-accent/80 max-w-2xl mx-auto">
+                上传您的照片，发现与您面容相似的云冈石窟佛像，体验千年文化的奇妙连接
+            </p>
+        </header>
+        
+        <!-- 主要内容区域 -->
+        <main class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- 左侧：上传和预览区域 -->
+            <section class="lg:w-1/2 bg-white rounded-lg shadow-lg p-6 border-4 border-stone">
+                <h2 class="text-2xl font-bold mb-6 text-center text-accent">上传您的照片</h2>
+                
+                <!-- 上传区域 -->
+                <div id="upload-area" class="border-2 border-dashed border-primary rounded-lg p-8 text-center cursor-pointer hover:bg-primary/5 transition-colors duration-300">
+                    <i class="fa fa-cloud-upload text-5xl text-primary mb-4"></i>
+                    <p class="text-lg mb-2">点击或拖拽照片到此处</p>
+                    <p class="text-sm text-gray-500">支持 JPG、PNG 格式，最大 5MB</p>
+                    <input type="file" id="file-input" class="hidden" accept="image/*">
+                </div>
+                
+                <!-- 预览区域 -->
+                <div id="preview-area" class="mt-6 hidden">
+                    <h3 class="text-xl font-semibold mb-4 text-center">照片预览</h3>
+                    <div class="relative">
+                        <img id="preview-image" class="w-full h-64 object-cover rounded-lg" alt="预览照片">
+                        <button id="reset-button" class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 匹配按钮 -->
+                    <button id="match-button" class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                        <i class="fa fa-magic mr-2"></i> 开始匹配
+                    </button>
+                </div>
+            </section>
+            
+            <!-- 右侧：结果展示区域 -->
+            <section id="result-section" class="lg:w-1/2 bg-white rounded-lg shadow-lg p-6 border-4 border-stone hidden">
+                <h2 class="text-2xl font-bold mb-6 text-center text-accent">匹配结果</h2>
+                
+                <!-- 匹配过程动画 -->
+                <div id="matching-animation" class="text-center py-8">
+                    <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-4"></div>
+                    <p class="text-lg">正在分析 facial features...</p>
+                    <div class="mt-6">
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div id="progress-bar" class="bg-primary h-4 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text" class="mt-2 text-sm text-gray-600">0%</p>
+                    </div>
+                    
+                    <!-- 特征点动画区域 -->
+                    <div id="feature-points-area" class="mt-8 relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+                        <canvas id="feature-canvas" class="w-full h-full"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 匹配结果 -->
+                <div id="match-result" class="hidden">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-accent">您的佛像匹配</h3>
+                        <p class="text-lg text-gray-600">相似度: <span id="similarity-score" class="font-bold text-primary">--</span></p>
+                    </div>
+                    
+                    <!-- 佛像图片 -->
+                    <div class="mb-6">
+                        <img id="buddha-image" class="w-full h-64 object-cover rounded-lg" alt="匹配的佛像">
+                    </div>
+                    
+                    <!-- 佛像信息 -->
+                    <div class="mb-6">
+                        <h4 class="text-xl font-bold mb-2 text-accent">
+                            <span id="buddha-name">--</span>
+                            <span id="buddha-cave" class="text-lg font-normal text-gray-600 ml-2">--</span>
+                        </h4>
+                        <p id="buddha-description" class="text-gray-700 mb-4">--</p>
+                        
+                        <!-- 展开/收起历史背景 -->
+                        <div class="border-t border-gray-200 pt-4">
+                            <button id="toggle-history" class="flex items-center text-primary hover:text-primary/80 transition-colors">
+                                <span class="mr-2">查看历史背景</span>
+                                <i class="fa fa-chevron-down"></i>
+                            </button>
+                            <div id="buddha-history" class="mt-4 text-gray-700 hidden">
+                                <!-- 历史背景内容将通过JS动态插入 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 重新匹配按钮 -->
+                    <button id="rematch-button" class="w-full bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                        <i class="fa fa-refresh mr-2"></i> 重新匹配
+                    </button>
+                </div>
+            </section>
+            
+            <!-- 初始状态提示 -->
+            <section id="initial-prompt" class="lg:w-1/2 bg-white rounded-lg shadow-lg p-6 border-4 border-stone flex flex-col items-center justify-center text-center">
+                <img src="https://p26-doubao-search-sign.byteimg.com/tos-cn-i-be4g95zd3a/1188012306603180066~tplv-be4g95zd3a-image.jpeg?rk3s=542c0f93&x-expires=1779868696&x-signature=LjfV94XaY1vFU6KHlEZ8nFUBylE%3D" alt="云冈石窟佛像" class="w-3/4 h-auto rounded-lg mb-6 shadow-md animate-float">
+                <h2 class="text-2xl font-bold mb-4 text-accent">发现您的千年渊源</h2>
+                <p class="text-gray-700 mb-6">
+                    云冈石窟是中国四大石窟之一，拥有1500多年历史，保存着51000余尊精美的佛教造像。
+                    上传您的照片，看看您与哪位千年古佛有着相似的面容特征。
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="bg-primary/10 p-4 rounded-lg flex items-center">
+                        <i class="fa fa-camera text-2xl text-primary mr-3"></i>
+                        <div class="text-left">
+                            <h3 class="font-bold">上传照片</h3>
+                            <p class="text-sm text-gray-600">支持正面清晰照片</p>
+                        </div>
+                    </div>
+                    <div class="bg-primary/10 p-4 rounded-lg flex items-center">
+                        <i class="fa fa-magic text-2xl text-primary mr-3"></i>
+                        <div class="text-left">
+                            <h3 class="font-bold">AI匹配</h3>
+                            <p class="text-sm text-gray-600">智能分析 facial features</p>
+                        </div>
+                    </div>
+                    <div class="bg-primary/10 p-4 rounded-lg flex items-center">
+                        <i class="fa fa-info-circle text-2xl text-primary mr-3"></i>
+                        <div class="text-left">
+                            <h3 class="font-bold">了解历史</h3>
+                            <p class="text-sm text-gray-600">探索佛像背后的故事</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- 页脚 -->
+        <footer class="mt-16 text-center text-gray-600 text-sm">
+            <p>© 2025 云冈石窟佛像匹配应用 | 本应用仅供娱乐和文化传播目的</p>
+            <p class="mt-2">云冈石窟 - 世界文化遗产，中国四大石窟之一</p>
+        </footer>
+    </div>
+
+    <script src="buddha_data.js"></script>
+    <script>
+        // DOM元素
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const previewArea = document.getElementById('preview-area');
+        const previewImage = document.getElementById('preview-image');
+        const resetButton = document.getElementById('reset-button');
+        const matchButton = document.getElementById('match-button');
+        const initialPrompt = document.getElementById('initial-prompt');
+        const resultSection = document.getElementById('result-section');
+        const matchingAnimation = document.getElementById('matching-animation');
+        const matchResult = document.getElementById('match-result');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const featureCanvas = document.getElementById('feature-canvas');
+        const ctx = featureCanvas.getContext('2d');
+        const similarityScore = document.getElementById('similarity-score');
+        const buddhaImage = document.getElementById('buddha-image');
+        const buddhaName = document.getElementById('buddha-name');
+        const buddhaCave = document.getElementById('buddha-cave');
+        const buddhaDescription = document.getElementById('buddha-description');
+        const toggleHistory = document.getElementById('toggle-history');
+        const buddhaHistory = document.getElementById('buddha-history');
+        const rematchButton = document.getElementById('rematch-button');
+
+        // 上传区域点击事件
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // 拖拽上传
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('bg-primary/10');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('bg-primary/10');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('bg-primary/10');
+            
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        // 文件选择事件
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                handleFile(fileInput.files[0]);
+            }
+        });
+
+        // 处理上传的文件
+        function handleFile(file) {
+            // 检查文件类型
+            if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+                alert('请上传JPG或PNG格式的图片');
+                return;
+            }
+            
+            // 检查文件大小
+            if (file.size > 5 * 1024 * 1024) {
+                alert('图片大小不能超过5MB');
+                return;
+            }
+            
+            // 显示预览
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewArea.classList.remove('hidden');
+                uploadArea.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 重置按钮点击事件
+        resetButton.addEventListener('click', () => {
+            previewArea.classList.add('hidden');
+            uploadArea.classList.remove('hidden');
+            fileInput.value = '';
+            initialPrompt.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+        });
+
+        // 匹配按钮点击事件
+        matchButton.addEventListener('click', async () => {
+            initialPrompt.classList.add('hidden');
+            resultSection.classList.remove('hidden');
+            matchingAnimation.classList.remove('hidden');
+            matchResult.classList.add('hidden');
+            
+            // 启动动画Promise
+            const animationPromise = new Promise(resolve => {
+                startMatchingAnimation(resolve);
+            });
+
+            try {
+                // 准备数据
+                const base64Data = previewImage.src.split(',')[1];
+                
+                // 调用后端API
+                const apiPromise = fetch('http://localhost:5000/match_face', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ image_base64: base64Data })
+                }).then(res => res.json());
+
+                // 等待动画和API都完成
+                const [_, result] = await Promise.all([animationPromise, apiPromise]);
+                
+                if (result.code === 0) {
+                    showMatchResult(result.data);
+                } else {
+                    alert('匹配失败: ' + result.msg);
+                    resetToInitial();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // 如果API失败，使用模拟数据演示（仅用于开发阶段，生产环境应提示错误）
+                // alert('服务器连接失败，将使用演示数据');
+                // await animationPromise;
+                // showMatchResult(null); 
+                
+                alert('服务器连接失败，请确保后端服务已启动');
+                resetToInitial();
+            }
+        });
+
+        function resetToInitial() {
+            matchingAnimation.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            initialPrompt.classList.remove('hidden');
+        }
+
+        // 开始匹配动画
+        function startMatchingAnimation(onComplete) {
+            // 设置画布尺寸
+            featureCanvas.width = featureCanvas.offsetWidth;
+            featureCanvas.height = featureCanvas.offsetHeight;
+            
+            // 清空画布
+            ctx.clearRect(0, 0, featureCanvas.width, featureCanvas.height);
+            
+            // 绘制用户图像的简化版本
+            const img = new Image();
+            img.src = previewImage.src;
+            img.onload = () => {
+                // 绘制半透明的用户图像
+                ctx.globalAlpha = 0.3;
+                ctx.drawImage(img, 0, 0, featureCanvas.width, featureCanvas.height);
+                ctx.globalAlpha = 1.0;
+                
+                // 模拟进度条
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 1;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}%`;
+                    
+                    // 绘制特征点
+                    if (progress % 5 === 0) {
+                        drawFeaturePoints(progress / 100);
+                    }
+                    
+                    // 完成匹配
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        if (onComplete) onComplete();
+                    }
+                }, 30); // 稍微加快一点速度
+            };
+        }
+
+        // 绘制特征点
+        function drawFeaturePoints(progress) {
+            // 计算要绘制的特征点数量
+            const pointCount = Math.floor(20 * progress);
+            
+            // 绘制新的特征点
+            for (let i = 0; i < 2; i++) {
+                const x = Math.random() * featureCanvas.width;
+                const y = Math.random() * featureCanvas.height;
+                const radius = Math.random() * 3 + 2;
+                
+                // 绘制特征点
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#D2B48C';
+                ctx.fill();
+                
+                // 绘制连接线
+                if (Math.random() > 0.5) {
+                    const x2 = Math.random() * featureCanvas.width;
+                    const y2 = Math.random() * featureCanvas.height;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = 'rgba(210, 180, 140, 0.5)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // 显示匹配结果
+        function showMatchResult(data) {
+            let matchedBuddha;
+            let score;
+
+            if (data) {
+                // 使用后端返回的数据
+                matchedBuddha = {
+                    name: data.buddha_name,
+                    caveNumber: data.cave_number,
+                    description: data.description || "云冈石窟珍贵造像，体现了北魏时期的艺术风格。", 
+                    history: data.history || `风格：${data.style}，年代：${data.year}`,
+                    imageUrl: data.image_path // 直接使用后端返回的相对路径
+                };
+                score = data.similarity;
+            }
+ else {
+                // 随机选择一个佛像作为匹配结果 (Fallback)
+                const randomIndex = Math.floor(Math.random() * buddhaData.length);
+                matchedBuddha = buddhaData[randomIndex];
+                score = Math.floor(Math.random() * 30) + 40;
+            }
+            
+            // 更新UI
+            similarityScore.textContent = `${score}%`;
+            // 注意：这里假设后端返回的图片路径是相对于服务器根目录的，或者是一个完整的URL
+            // 如果是本地文件路径，可能需要后端提供文件服务，或者前端做映射
+            // 临时处理：如果data.image_path是http开头则直接用，否则尝试相对路径
+            if (matchedBuddha.imageUrl.startsWith('http')) {
+                buddhaImage.src = matchedBuddha.imageUrl;
+            } else {
+                // 假设图片在 assets/images/buddha/ 下
+                // 这里需要根据实际部署调整
+                buddhaImage.src = matchedBuddha.imageUrl; 
+            }
+            
+            buddhaName.textContent = matchedBuddha.name;
+            buddhaCave.textContent = matchedBuddha.caveNumber;
+            buddhaDescription.textContent = matchedBuddha.description;
+            buddhaHistory.textContent = matchedBuddha.history;
+            
+            // 隐藏匹配动画，显示结果
+            matchingAnimation.classList.add('hidden');
+            matchResult.classList.remove('hidden');
+        }
+
+        // 切换历史背景显示/隐藏
+        toggleHistory.addEventListener('click', () => {
+            const icon = toggleHistory.querySelector('i');
+            
+            if (buddhaHistory.classList.contains('hidden')) {
+                buddhaHistory.classList.remove('hidden');
+                toggleHistory.querySelector('span').textContent = '收起历史背景';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                buddhaHistory.classList.add('hidden');
+                toggleHistory.querySelector('span').textContent = '查看历史背景';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        });
+
+        // 重新匹配按钮点击事件
+        rematchButton.addEventListener('click', () => {
+            matchingAnimation.classList.remove('hidden');
+            matchResult.classList.add('hidden');
+            startMatchingAnimation();
+        });
+    </script>
+</body>
+</html>
